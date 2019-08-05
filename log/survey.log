@@ -1,0 +1,53 @@
+2019-08-05 09:52:52 INFO  com.gobestsoft.survey.SurveyApplication --> Starting SurveyApplication on LUNG with PID 12036 (E:\workspace\survey\target\classes started by Administrator in E:\workspace\survey)
+2019-08-05 09:52:52 INFO  com.gobestsoft.survey.SurveyApplication --> No active profile set, falling back to default profiles: default
+2019-08-05 09:52:52 INFO  o.s.b.d.env.DevToolsPropertyDefaultsPostProcessor --> Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2019-08-05 09:52:52 INFO  o.s.b.d.env.DevToolsPropertyDefaultsPostProcessor --> For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2019-08-05 09:52:53 WARN  org.mybatis.spring.mapper.ClassPathMapperScanner --> Skipping MapperFactoryBean with name 'surveyMapper' and 'com.gobestsoft.survey.mapper.SurveyMapper' mapperInterface. Bean already defined with the same name!
+2019-08-05 09:52:53 WARN  org.mybatis.spring.mapper.ClassPathMapperScanner --> Skipping MapperFactoryBean with name 'surveyQuestionMapper' and 'com.gobestsoft.survey.mapper.SurveyQuestionMapper' mapperInterface. Bean already defined with the same name!
+2019-08-05 09:52:53 WARN  org.mybatis.spring.mapper.ClassPathMapperScanner --> Skipping MapperFactoryBean with name 'surveyRecordAnswerMapper' and 'com.gobestsoft.survey.mapper.SurveyRecordAnswerMapper' mapperInterface. Bean already defined with the same name!
+2019-08-05 09:52:53 WARN  org.mybatis.spring.mapper.ClassPathMapperScanner --> No MyBatis mapper was found in '[com.gobestsoft.survey.mapper]' package. Please check your configuration.
+2019-08-05 09:52:55 INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer --> Tomcat initialized with port(s): 8082 (http)
+2019-08-05 09:52:55 INFO  org.apache.catalina.core.StandardService --> Starting service [Tomcat]
+2019-08-05 09:52:55 INFO  org.apache.catalina.core.StandardEngine --> Starting Servlet engine: [Apache Tomcat/9.0.21]
+2019-08-05 09:52:55 INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] --> Initializing Spring embedded WebApplicationContext
+2019-08-05 09:52:55 INFO  org.springframework.web.context.ContextLoader --> Root WebApplicationContext: initialization completed in 2860 ms
+2019-08-05 09:52:56 INFO  com.zaxxer.hikari.HikariDataSource --> HikariPool-1 - Starting...
+2019-08-05 09:52:56 INFO  com.zaxxer.hikari.HikariDataSource --> HikariPool-1 - Start completed.
+2019-08-05 09:52:57 INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor --> Initializing ExecutorService 'applicationTaskExecutor'
+2019-08-05 09:52:57 WARN  org.thymeleaf.templatemode.TemplateMode --> [THYMELEAF][restartedMain] Template Mode 'LEGACYHTML5' is deprecated. Using Template Mode 'HTML' instead.
+2019-08-05 09:52:58 INFO  o.s.b.d.autoconfigure.OptionalLiveReloadServer --> LiveReload server is running on port 35729
+2019-08-05 09:52:58 INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer --> Tomcat started on port(s): 8082 (http) with context path ''
+2019-08-05 09:52:58 INFO  com.gobestsoft.survey.SurveyApplication --> Started SurveyApplication in 6.155 seconds (JVM running for 7.109)
+2019-08-05 09:52:58 INFO  com.gobestsoft.survey.SurveyApplication --> -----启动完成-----
+2019-08-05 09:58:03 INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor --> Shutting down ExecutorService 'applicationTaskExecutor'
+2019-08-05 09:58:03 INFO  com.zaxxer.hikari.HikariDataSource --> HikariPool-1 - Shutdown initiated...
+2019-08-05 09:58:03 INFO  com.zaxxer.hikari.HikariDataSource --> HikariPool-1 - Shutdown completed.
+2019-08-05 09:58:05 INFO  com.gobestsoft.survey.SurveyApplication --> Starting SurveyApplication on LUNG with PID 10592 (E:\workspace\survey\target\classes started by Administrator in E:\workspace\survey)
+2019-08-05 09:58:05 INFO  com.gobestsoft.survey.SurveyApplication --> No active profile set, falling back to default profiles: default
+2019-08-05 09:58:05 INFO  o.s.b.d.env.DevToolsPropertyDefaultsPostProcessor --> Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2019-08-05 09:58:05 INFO  o.s.b.d.env.DevToolsPropertyDefaultsPostProcessor --> For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2019-08-05 09:58:06 WARN  org.mybatis.spring.mapper.ClassPathMapperScanner --> Skipping MapperFactoryBean with name 'surveyMapper' and 'com.gobestsoft.survey.mapper.SurveyMapper' mapperInterface. Bean already defined with the same name!
+2019-08-05 09:58:06 WARN  org.mybatis.spring.mapper.ClassPathMapperScanner --> Skipping MapperFactoryBean with name 'surveyQuestionMapper' and 'com.gobestsoft.survey.mapper.SurveyQuestionMapper' mapperInterface. Bean already defined with the same name!
+2019-08-05 09:58:06 WARN  org.mybatis.spring.mapper.ClassPathMapperScanner --> Skipping MapperFactoryBean with name 'surveyRecordAnswerMapper' and 'com.gobestsoft.survey.mapper.SurveyRecordAnswerMapper' mapperInterface. Bean already defined with the same name!
+2019-08-05 09:58:06 WARN  org.mybatis.spring.mapper.ClassPathMapperScanner --> No MyBatis mapper was found in '[com.gobestsoft.survey.mapper]' package. Please check your configuration.
+2019-08-05 09:58:07 INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer --> Tomcat initialized with port(s): 8082 (http)
+2019-08-05 09:58:08 INFO  org.apache.catalina.core.StandardService --> Starting service [Tomcat]
+2019-08-05 09:58:08 INFO  org.apache.catalina.core.StandardEngine --> Starting Servlet engine: [Apache Tomcat/9.0.21]
+2019-08-05 09:58:08 INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] --> Initializing Spring embedded WebApplicationContext
+2019-08-05 09:58:08 INFO  org.springframework.web.context.ContextLoader --> Root WebApplicationContext: initialization completed in 2400 ms
+2019-08-05 09:58:08 INFO  com.zaxxer.hikari.HikariDataSource --> HikariPool-1 - Starting...
+2019-08-05 09:58:08 INFO  com.zaxxer.hikari.HikariDataSource --> HikariPool-1 - Start completed.
+2019-08-05 09:58:09 INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor --> Initializing ExecutorService 'applicationTaskExecutor'
+2019-08-05 09:58:10 WARN  org.thymeleaf.templatemode.TemplateMode --> [THYMELEAF][restartedMain] Template Mode 'LEGACYHTML5' is deprecated. Using Template Mode 'HTML' instead.
+2019-08-05 09:58:10 INFO  o.s.b.d.autoconfigure.OptionalLiveReloadServer --> LiveReload server is running on port 35729
+2019-08-05 09:58:10 INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer --> Tomcat started on port(s): 8082 (http) with context path ''
+2019-08-05 09:58:10 INFO  com.gobestsoft.survey.SurveyApplication --> Started SurveyApplication in 5.352 seconds (JVM running for 6.394)
+2019-08-05 09:58:10 INFO  com.gobestsoft.survey.SurveyApplication --> -----启动完成-----
+2019-08-05 09:58:13 INFO  org.apache.tomcat.util.http.parser.Cookie --> A cookie header was received [1564302530,1564376922,1564626645] that contained an invalid cookie. That cookie will be ignored.
+ Note: further occurrences of this error will be logged at DEBUG level.
+2019-08-05 09:58:13 INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] --> Initializing Spring DispatcherServlet 'dispatcherServlet'
+2019-08-05 09:58:13 INFO  org.springframework.web.servlet.DispatcherServlet --> Initializing Servlet 'dispatcherServlet'
+2019-08-05 09:58:13 INFO  org.springframework.web.servlet.DispatcherServlet --> Completed initialization in 11 ms
+2019-08-05 11:00:12 INFO  o.s.scheduling.concurrent.ThreadPoolTaskExecutor --> Shutting down ExecutorService 'applicationTaskExecutor'
+2019-08-05 11:00:12 INFO  com.zaxxer.hikari.HikariDataSource --> HikariPool-1 - Shutdown initiated...
+2019-08-05 11:00:12 INFO  com.zaxxer.hikari.HikariDataSource --> HikariPool-1 - Shutdown completed.

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>问卷编辑</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script th:src="@{/js/App.js}"></script>
+</head>
+<body>
+    <div class="layui-container" id="SurveyForm">
+
+        <input type="hidden" id="id" th:value="${surveyId}">
+        <input type="hidden" id="status" th:value="${status}">
+
+        <div class="survey-row">
+            <div class="survey-head">
+                <input th:value="${survey.title}" type="text" class="border-hide" id="title"/>
+            </div>
+            <div class="description text-right">
+                <input th:value="${survey.description}" type="text" class="border-hide" id="description"/>
+            </div>
+
+            <div class="line"></div>
+
+            <div class="question-all" th:each="q : ${survey.questionList}" th:alt="${q.id}">
+
+                <div class="question">
+                    <div class="info">
+                        <span th:text="${qStat.count}"></span>
+                        <span class="block">.</span>
+                        <span class="title">
+                            <input th:value="${q.title}" type="text" class="border-hide" />
+                        </span>
+                        <span class="radio">
+                            <label class="block"><input type="radio" value="1" th:name="${q.id}" th:attr ="checked=${q.type==1 ? true:false}" />单选</label>
+                            <label class="block"><input type="radio" value="2" th:name="${q.id}" th:attr ="checked=${q.type==2 ? true:false}" />多选</label>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="option">
+                    <span th:each="opt : ${q.options}" class="option-item">
+                        <label th:each="k : ${opt.keySet()}">
+                            <span class="option-item-key letter" th:text="${k}"></span>
+                            <span class="block">.</span>
+                            <span class="option-item-text">
+                                <input th:value="${opt.get(k)}" type="text" class="border-hide" />
+                            </span>
+                            <span class="pointer" onclick="delItem(this)">
+                                <i class="layui-icon layui-icon-close-fill"></i>
+                            </span>
+                        </label>
+                    </span>
+                    <span class='option-add pointer' onclick="addItem(this)">
+                        <i class="layui-icon layui-icon-add-circle"></i>添加选项
+                    </span>
+                </div>
+
+                <span class='question-add pointer' onclick="addQuestion(this)">
+                    <i class="layui-icon layui-icon-add-circle"></i>添加一题
+                </span>
+                <span class='question-del pointer' onclick="delQuestion(this)">
+                    <i class="layui-icon layui-icon-close-fill"></i>删除此题
+                </span>
+
+                <div class="description">
+                    <span>问题说明:</span>
+                    <span class="block"></span>
+                    <input type="text" th:value="${q.description}" class="border-hide" />
+                </div>
+
+                <div class="line"></div>
+
+            </div>
+
+        </div>
+
+        <div class="row btns">
+            <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="SurveyEdit.save()">保存</button>
+        </div>
+
+    </div>
+</body>
+
+<script type="text/javascript">
+        $(function () {
+            init();
+            num2Letter();
+        });
+
+        /*
+         * 初始对话框
+         */
+        var SurveyEdit = {
+            recordData: {}
+        };
+
+        /**
+         * 设置对话框中的数据
+         * param key 数据的名称
+         */
+        SurveyEdit.set = function (key) {
+            this.recordData[key] = $("#" + key).val();
+            return this;
+        };
+
+        /**
+         * 信息设定
+         */
+        SurveyEdit.collectData = function () {
+            this.set('id').set('title').set('description').set('status');
+        };
+
+        /**
+         * 清空数据
+         */
+        SurveyEdit.clearData = function () {
+            this.recordData = {};
+        };
+
+        SurveyEdit.setPostData = function(){
+            this.clearData();
+            this.collectData();
+            var title = $("#title").val();
+            if (title == null || title === "") {
+                App.error("问卷名称不能为空!");
+                return false;
+            }
+            var questionList = [];
+            var questions = $(".question-all");
+            for(var i=0; i<questions.length; i++){
+                var q = questions.eq(i);
+                var question = {};
+                var questionTitle = q.find(".title input").val();
+                if(!questionTitle || questionTitle===''){
+                    App.error("第"+(i+1)+"题标题为空");
+                    return false;
+                }
+                question.id = parseInt(q.attr('alt'));
+                question.title = q.find(".title input").val();
+                question.description = q.find(".description input").val();
+                question.type = parseInt(q.find(".radio input[type=radio]:checked").val());
+                question.position = i+1;
+
+                var options = [];
+                var inputs = q.find(".option .option-item-text input");
+                for(var j=0; j<inputs.length; j++){
+                    var option = {};
+                    var opt = inputs.eq(j).val();
+                    if(!opt|| opt===''){
+                        App.error("第"+(i+1)+"题 第"+(j+1)+"选项为空");
+                        return false;
+                    }
+                    option[j] = opt;
+                    options.push(option);
+                }
+                if(options.length === 0){
+                    App.error("第"+(i+1)+"题 没有选项");
+                    return false;
+                }
+                question.option =  JSON.stringify(options);
+
+                questionList.push(question);
+            }
+
+            this.recordData.questionList = questionList;
+
+            this.recordData.questionNum = questionList.length;
+            return true;
+        };
+
+        SurveyEdit.doSave = function save(data){
+            var url = App.ctxPath + "/survey/doSave";
+            $.ajax({
+                async: false,
+                url:url,
+                data:JSON.stringify(data),
+                type:"post",
+                dataType:"json",
+                contentType:"application/json",
+                success:function (res) {
+                    SurveyEdit.close();
+                },
+                error:function(err){
+                    App.error("提交失败!" + err.responseJSON.message + "!");
+                }
+            });
+        };
+
+        /**
+         *提交
+         */
+        SurveyEdit.save = function () {
+            if (SurveyEdit.setPostData()) {
+                SurveyEdit.doSave(this.recordData);
+            }
+        };
+
+
+        /**
+         * 关闭此对话框
+         */
+        SurveyEdit.close = function () {
+            App.success("提交成功!");
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        };
+
+    </script>
+
+</html>

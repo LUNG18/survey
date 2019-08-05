@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>问卷管理列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script th:src="@{/js/App.js}"></script>
+</head>
+<body>
+    <div class="layui-container" id="SurveyForm">
+
+        <input type="hidden" id="surveyId" th:value="${surveyId}">
+
+        <div class="survey-row">
+
+            <div class="head text-center">
+                <h1 th:text="${survey.title}"></h1>
+            </div>
+
+            <div class="description text-right">
+                <span th:text="${survey.description}"></span>
+            </div>
+
+            <div class="line"></div>
+
+            <div class="question-all" th:each="q,qStat : ${survey.questionList}">
+
+                <div class="question">
+                    <div class="info">
+                        <span th:text="${qStat.count}"></span>
+                        <span class="block">.</span>
+                        <span class="title" th:text="${q.title}"></span>
+                    </div>
+                </div>
+
+                <div class="option">
+                    <span th:each="opt : ${q.options}" class="option-item">
+                        <label th:each="k : ${opt.keySet()}">
+                            <input type="radio" disabled th:if="${q.type == 1}"/>
+                            <input type="checkbox" disabled th:if="${q.type == 2}"/>
+                            <span class="block"></span>
+                            <span th:text="${k}" class="letter"></span>
+                            <span class="block">.</span>
+                            <span th:text="${opt.get(k)}" class="option-item-text"></span>
+                        </label>
+                    </span>
+                </div>
+
+                <div class="answer layui-form">
+                    <span>所选答案:</span>
+                    <span class="block"></span>
+                    <input type="text" placeholder="所选答案..." class="layui-input" th:alt="${q.id}" th:attr="position=${q.position}"/>
+                    <span class="layui-badge-dot"></span>
+                    <span style="font-size: 10px;">(格式: ABCD...)</span>
+                </div>
+
+                <div class="description" th:if='${q.description != null && !"".equals(q.description)}'>
+                    <span>问题说明:</span>
+                    <span class="block"></span>
+                    <span th:text="${q.description}"></span>
+                </div>
+
+                <div class="line"></div>
+
+            </div>
+
+        </div>
+
+        <div class="row btns">
+            <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="SurveyDetail.doRecord()">确定录入</button>
+        </div>
+
+    </div>
+</body>
+<script type="text/javascript">
+
+    $(function () {
+        init();
+        num2Letter();
+    });
+
+    /*
+     * 初始对话框
+     */
+    var SurveyDetail = {
+        recordData: []
+    };
+
+    /**
+     * 清空数据
+     */
+    SurveyDetail.clearData = function () {
+        this.recordData = [];
+    };
+
+    SurveyDetail.record = function () {
+        this.clearData();
+        var surveyId = parseInt($("#surveyId").val());
+        var questions = $(".question-all");
+        for(var i=0; i<questions.length; i++){
+            var input = questions.eq(i).find(".answer input").first();
+            var questionId = parseInt(input.attr("alt"));
+            var position = parseInt(input.attr("position"));
+
+            var answerStr = input.val();
+            if(answerStr === ""){
+                App.error("第"+(i+1)+"题答案为空");
+                return false;
+            }
+            for(var j=0; j<answerStr.split('').length; j++){
+                var answer = getBigLetterIndex(answerStr[j]);
+                if(answer < 0){
+                    answer = getSmallLetterIndex(answerStr[j]);
+                }
+
+                if(answer < 0){
+                    App.alert("第 "+(i+1)+" 题答案中有非字母字符");
+                    return false;
+                }
+                if(patch(answerStr, answerStr[j]) > 1){
+                    App.alert("第 "+(i+1)+" 题答案有重复部分");
+                    return false;
+                }
+
+                var answerObj = {};
+                answerObj.surveyId = surveyId;
+                answerObj.questionId = questionId;
+                answerObj.position = position;
+                answerObj.answer = answer;
+
+                this.recordData.push(answerObj);
+            }
+        }
+        return true;
+    };
+
+    function patch(s, re) {
+        re = eval("/" + re + "/ig");
+        return s.match(re) ? s.match(re).length : 0;
+    }
+
+    SurveyDetail.doRecord = function(){
+        if(SurveyDetail.record()){
+            $.ajax({
+                async: false,
+                data: JSON.stringify(this.recordData),
+                type: "post",
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                url: App.ctxPath + "/survey/doRecord",
+                success: function (res) {
+                    SurveyDetail.close();
+                },
+                error:function(err){
+                    App.error("提交失败!" + err.responseJSON.message + "!");
+                }
+
+            })
+        }
+    };
+
+    /**
+     * 关闭此对话框
+     */
+    SurveyDetail.close = function () {
+        App.success("提交成功!");
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    };
+
+
+</script>
+</html>

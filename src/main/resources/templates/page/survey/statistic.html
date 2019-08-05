@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>回答统计</title>
+    <script th:src="@{/js/App.js}"></script>
+</head>
+<body>
+    <div class="row">
+        <input type="hidden" id="${surveyId}" />
+        <div class="layui-form" style="margin: 0 10%;">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend style="margin: 0 auto;"><h2>问卷答案统计</h2></legend>
+            </fieldset>
+            <!-- 表格1 -->
+            <table class="layui-table">
+                <colgroup>
+                    <col>
+                    <col>
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th style="text-align: center">问卷名称</th>
+                        <th style="text-align: center">题目数量</th>
+                        <th style="text-align: center">已录入(份)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td th:text="${survey.title}"></td>
+                        <td th:text="${survey.questionNum}"></td>
+                        <td th:text="${survey.recordNum}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 表格2 -->
+            <div th:if="${survey.recordNum > 0}">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;" th:if="${survey.recordNum > 0}">
+                    <legend style="margin: 0 auto;"><h2>统计详情</h2></legend>
+                </fieldset>
+                <table class="layui-table">
+                    <colgroup>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th style="text-align: center">题号</th>
+                        <th style="text-align: center" th:each="answer : ${answers}"><span class="letter" th:text="${answer}"></span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="k : ${map.keySet()}">
+                        <td th:text="${k}"></td>
+                        <td th:each="data,dataStat : ${map.get(k)}">
+                            <span th:if="${data.num>0}" th:text="${data.num}+' 个'"></span>
+                            <span th:if="${data.num<=0}">-</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;" th:if="${survey.recordNum == 0}">
+                <legend style="margin: 0 auto;"><h2>暂无录入</h2></legend>
+            </fieldset>
+        </div>
+    </div>
+</body>
+    <script type="text/javascript">
+        $(function () {
+            init();
+            num2Letter();
+        })
+    </script>
+</html>

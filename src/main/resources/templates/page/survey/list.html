@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>问卷管理列表</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<script th:src="@{/js/App.js}"></script>
+</head>
+<body>
+	<blockquote class="layui-elem-quote" style="border-left: none;">
+		<div class="survey-table">
+			问卷名称:
+			<div class="layui-inline">
+				<input class="layui-input" name="id" id="title" autocomplete="off" type="search">
+			</div>
+			<button class="layui-btn" data-type="reload" id="search_button"><i class="layui-icon layui-icon-search"></i>搜索</button>
+			<button class="layui-btn" data-type="reload" id="create_button"><i class="layui-icon layui-icon-add-1"></i>新建</button>
+			<form class="layui-form" action="">
+				<div class="layui-form-item">
+					<label class="layui-form-label">状态</label>
+					<div class="layui-input-block">
+					  <select lay-filter="status" id="status">
+						<option value=""></option>
+						<option value="0">未录入</option>
+						<option value="1">已录入</option>
+					  </select>
+					</div>
+				</div>
+			</form>
+		</div>
+	</blockquote>
+
+	<table class="layui-hide" id="surveyTable" lay-filter="surveyTableFilter"></table>
+
+	<script type="text/html" id="barTool">
+		<a class="layui-btn layui-btn-xs" lay-event="detail">录入</a>
+		<a class="layui-btn layui-btn-xs" lay-event="statistic">统计</a>
+		<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+
+	<script>
+
+		var Survey={
+			recordData: {}
+		};
+
+		/**
+		 * 信息设定
+		 */
+		Survey.params = function () {
+			var params = {};
+			params.title = $("#title").val();
+			params.status = $("#status").val();
+			return params;
+		};
+
+		/**
+		 * 清空数据
+		 */
+		Survey.clearData = function () {
+			this.recordData = {};
+		};
+
+		var table;
+
+		layui.use(['element','form'], function(){
+			var $ = layui.jquery;
+			var form = layui.form;
+			$("#create_button").on('click',function(){
+				layer.open({
+					type: 2,
+					title:'问卷调查',
+					area: ['100%', '100%'],
+					fixed: false,
+					maxmin: true,
+					content: App.ctxPath + '/survey/add',
+					end: function(){
+						table.reload('table_render', {
+							page: {
+							  curr: 1 //重新从第 1 页开始
+							}
+						});
+					}
+				});
+			});
+			$("#search_button").on('click',function(){
+				table.reload('table_render', {
+					page: {
+					  curr: 1 //重新从第 1 页开始
+					},
+					where: Survey.params()
+				});
+			});
+			form.on('select(status)', function(data){
+				table.reload('table_render', {
+					page: {
+					  curr: 1 //重新从第 1 页开始
+					},
+					where: Survey.params()
+				});
+			});
+		});
+
+		layui.use('table', function() {
+			layui.$.support.cors = true;
+			table = layui.table;
+
+			table.render({
+				elem: '#surveyTable',
+				url: App.ctxPath + '/survey/getList',
+				toolbar: '1',
+				title: '用户数据表',
+				cols: [
+					[
+						/*{type: 'radio',fixed: 'left'},*/
+						{field: 'id', title: '序号',align:'center',hide: true},
+						{title: '序号',align:'center', sort:true, type: 'numbers',width:100},
+						{field: 'title', title: '问卷名称',align:'center'},
+						{field: 'status', title: '状态',align:'center'},
+						{field: 'questionNum', title: '题目数量',align:'center'},
+						{field: 'recordNum', title: '已录入(份)',align:'center'},
+						{field: 'createTime', title: '创建时间',align:'center'},
+						{
+							fixed: 'right',
+							title: '操作',
+							toolbar: '#barTool',
+							align:'center',
+							width: 210
+						}
+					]
+				],
+				parseData: function(res){
+					for(var i = 0;i<res.data.length;i++){
+						var date = res.data[i].createTime;
+						var status = res.data[i].status;
+						var year = date.substring(0,4);
+						var month = date.substring(4,6);
+						var day = date.substring(6,8);
+						status === 1? res.data[i].status = '已录入' : res.data[i].status = '未录入';
+						res.data[i].createTime = year+'-'+month+'-'+day;
+					}
+					return {
+						"code": 0,
+						"count": res.count,
+						"data": res.data
+					};
+				},
+				page: true,
+				id: "table_render"
+			});
+
+			//监听行工具事件
+			table.on('tool(surveyTableFilter)', function(obj) {
+				var id = obj.data.id;
+
+				if (obj.event === 'del') {
+					layer.confirm('请确认是否删除？', function(index) {
+						obj.del();
+						$.post(
+								App.ctxPath+"/survey/remove",
+								{id: id},
+								function (res) {
+									if(res.code === 200){
+										App.success("删除成功");
+										Survey.reloadTable();
+									}else{
+										App.success("删除失败");
+									}
+									layer.close(index);
+								}
+						);
+					});
+				} else if (obj.event === 'detail') {
+					layer.open({
+						type: 2,
+						title: '答案录入',
+						area: ['100%', '100%'],
+						fixed: false,
+						maxmin: true,
+						content: App.ctxPath + '/survey/detail?id='+id,
+						end: function () {
+							table.reload('table_render', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								}
+							});
+						}
+					});
+				}else if (obj.event === 'edit') {
+					layer.open({
+						type: 2,
+						title: '问卷编辑',
+						area: ['100%', '100%'],
+						fixed: false,
+						maxmin: true,
+						content: App.ctxPath + '/survey/edit?id='+id,
+						end: function () {
+							table.reload('table_render', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								}
+							});
+						}
+					});
+				}else if (obj.event === 'statistic') {
+					layer.open({
+						type: 2,
+						title: '答案统计',
+						area: ['100%', '100%'],
+						fixed: false,
+						maxmin: true,
+						content: App.ctxPath + '/survey/statistic?id='+id,
+						end: function () {
+							table.reload('table_render', {
+								page: {
+									curr: 1 //重新从第 1 页开始
+								}
+							});
+						}
+					});
+				}
+			});
+		});
+
+		/* 按照条件重新加载列表 */
+		Survey.reloadTable = function(){
+			table.reload('table_render', {
+				page: {
+					curr: 1 //重新从第 1 页开始
+				}
+			});
+		}
+
+	</script>
+
+</body>
+</html>

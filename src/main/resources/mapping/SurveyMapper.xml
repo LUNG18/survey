@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gobestsoft.survey.mapper.SurveyMapper">
+
+    <sql id="selectItem">
+        DISTINCT survey_paper.id,
+        survey_paper.title,
+        survey_paper.description,
+        survey_paper.`status`,
+        survey_paper.question_num,
+        survey_paper.create_time
+    </sql>
+
+    <!--<select id="selectByCondition" resultType="com.gobestsoft.survey.pojo.SurveyPojo">
+        SELECT
+        <include refid="selectItem"></include>
+        FROM survey_paper
+        JOIN survey_question ON survey_paper.id = survey_question.survey_id
+        <where>
+            del_flg = 0
+            <if test="title!=null and title!=''">
+                AND survey_paper.title like '%${title}%'
+            </if>
+            <if test="status != null and status != ''">
+                AND survey_paper.status = #{status}
+            </if>
+        </where>
+        order by survey_paper.create_time desc
+    </select>-->
+
+</mapper>

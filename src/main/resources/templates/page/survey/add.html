@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>新建问卷</title>
+    <script th:src="@{/js/App.js}"></script>
+</head>
+<body>
+    <div class="layui-container" id="SurveyForm" style="padding:2% 0">
+
+        <div class="survey-row">
+
+            <div id="survey-create">
+                <div class="survey-head">
+                    <span>问卷名称:</span>
+                    <span class="block"></span>
+                    <input value="" id="title" type="text" placeholder="问卷名称..."/>
+                </div>
+                <br/>
+                <br/>
+                <div class="description text-right">
+                    <span>问卷简介:</span>
+                    <span class="block"></span>
+                    <input value="" id="description" type="text" placeholder="问卷简介..." style="min-width: 300px;"/>
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                <div class="question-num">
+                    <span>请输入题目数量:</span>
+                    <div id="questionNum"></div>
+                </div>
+                <div class="row text-center" id="create-btn">
+                    <button class="layui-btn layui-btn-normal layui-btn-radius" onclick="SurveyAdd.create()">录入问卷</button>
+                </div>
+            </div>
+
+            <div class="line"></div>
+
+            <div class="questions">
+
+            </div>
+
+        </div>
+
+        <div class="row btns">
+            <button type="button" class="layui-btn layui-btn-radius" onclick="SurveyAdd.save()">仅保存</button>
+            <button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="SurveyAdd.record()">保存并录入</button>
+        </div>
+
+    </div>
+</body>
+<script type="text/javascript">
+
+    $(function () {
+        init();
+    });
+
+    /*
+     * 初始对话框
+     */
+    var SurveyAdd = {
+        recordData: {}
+    };
+
+    /**
+     * 设置对话框中的数据
+     * param key 数据的名称
+     */
+    SurveyAdd.set = function (key) {
+        this.recordData[key] = $("#" + key).val();
+        return this;
+    };
+
+    /**
+     * 信息设定
+     */
+    SurveyAdd.collectData = function () {
+        this.set('title').set('description');
+    };
+
+    /**
+     * 清空数据
+     */
+    SurveyAdd.clearData = function () {
+        this.recordData = {};
+    };
+
+
+    /**
+     * 打开问卷
+     */
+    SurveyAdd.create = function () {
+        this.clearData();
+        this.collectData();
+        var title = $("#title").val();
+        if (title == null || title === "") {
+            App.error("问卷名称不能为空");
+            return;
+        }
+        var questionNum = parseInt($("#questionNum input").val());
+        if(questionNum <=0 ){
+            App.error("请输入问题数量");
+            return;
+        }
+        //按照问题数加载
+        var questionHtml = "";
+        for(var i=0; i<questionNum; i++){
+            questionHtml = questionHtml + getQuestionHtml(2);
+        }
+        $(".questions").html(questionHtml);
+        num2Letter();
+        questionNumControl();
+        //显示问题组
+        cssControl();
+        $("#create-btn,.question-num").hide();
+        // $(".btns").show();
+    };
+
+    SurveyAdd.setPostData = function(){
+        this.clearData();
+        this.collectData();
+        var title = $("#title").val();
+        if (title == null || title === "") {
+            App.error("问卷名称不能为空!");
+            return false;
+        }
+        var questionNum = parseInt($("#questionNum input").val());
+        if(questionNum <=0 ){
+            App.error("请输入问题数量");
+            return false;
+        }
+        var questionList = [];
+        var questions = $(".question-all");
+        if(questions.length > 0){
+            for(var i=0; i<questions.length; i++){
+                var q = questions.eq(i);
+                var question = {};
+                var questionTitle = q.find(".title input").val();
+                if(!questionTitle || questionTitle===''){
+                    App.error("第"+(i+1)+"题标题为空");
+                    return false;
+                }
+                question.title = q.find(".title input").val();
+                question.description = q.find(".description input").val();
+                question.type = parseInt(q.find(".radio input[type=radio]:checked").val());
+                question.position = i+1;
+
+                var options = [];
+                var inputs = q.find(".option .option-item-text input");
+                for(var j=0; j<inputs.length; j++){
+                    var option = {};
+                    var opt = inputs.eq(j).val();
+                    if(!opt|| opt===''){
+                        App.error("第"+(i+1)+"题 第"+(j+1)+"选项为空");
+                        return false;
+                    }
+                    option[j] = opt;
+                    options.push(option);
+                }
+                if(options.length === 0){
+                    App.error("第"+(i+1)+"题 没有选项");
+                    return false;
+                }
+                question.option =  JSON.stringify(options);
+
+                questionList.push(question);
+            }
+        }else{
+            for(var i=0; i<questionNum; i++) {
+                var question = {};
+                question.title = "第"+(i+1)+"题";
+                question.description = "";
+                question.type = 1;
+                question.position = i+1;
+                var options = [];
+                for(var j=0; j<2; j++){
+                    var option = {};
+                    var opt = "第"+(j+1)+"个选项";
+                    option[j] = opt;
+                    options.push(option);
+                }
+                question.option =  JSON.stringify(options);
+
+                questionList.push(question);
+            }
+        }
+
+        this.recordData.questionList = questionList;
+
+        this.recordData.questionNum = questionList.length;
+        return true;
+    };
+
+    SurveyAdd.doSave = function save(data,type){
+        var url = App.ctxPath + "/survey/doSave";
+        $.ajax({
+            async: false,
+            url:url,
+            data:JSON.stringify(data),
+            type:"post",
+            dataType:"json",
+            contentType:"application/json",
+            success:function (res) {
+                SurveyAdd.close();
+                if(type === 'record'){
+                    var surveyId = res.data;
+                    parent.layer.open({
+                        type: 2,
+                        title: '答案录入',
+                        area: ['100%', '100%'],
+                        fixed: false,
+                        maxmin: true,
+                        content: App.ctxPath + '/survey/detail?id='+surveyId,
+                        end: function () {
+                            table.reload('table_render', {
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                            });
+                        }
+                    });
+                }
+            },
+            error:function(err){
+                App.error("提交失败!" + err.responseJSON.message + "!");
+            }
+        });
+    };
+
+    /**
+     * 仅保存
+     */
+    SurveyAdd.save = function () {
+        if (SurveyAdd.setPostData()) {
+            SurveyAdd.doSave(this.recordData, 'save');
+        }
+    };
+
+    /**
+     * 保存并录入
+     */
+    SurveyAdd.record = function () {
+        if (SurveyAdd.setPostData()) {
+            SurveyAdd.doSave(this.recordData, 'record');
+        }
+    };
+
+    /**
+     * 关闭此对话框
+     */
+    SurveyAdd.close = function () {
+        App.success("提交成功!");
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    };
+
+</script>
+</html>

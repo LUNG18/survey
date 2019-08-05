@@ -1,0 +1,189 @@
+/*通用*/
+html,body{
+	width: 100%;
+}
+.layui-inline{
+	margin-right: 10px;
+}
+
+form.layui-form{
+	width: 200px;display: inline-block;
+}
+
+.layui-table-tool .layui-inline[lay-event="LAYTABLE_EXPORT"], .layui-table-tool .layui-inline[lay-event="LAYTABLE_PRINT"]{
+	display: none;
+}
+
+.pointer{
+	cursor: pointer;
+}
+
+.text-right{
+	text-align: right;
+}
+
+.text-left{
+	text-align: left;
+}
+
+.text-center,td,th{
+	text-align: center;
+}
+
+
+/*组件*/
+.row.btns{
+	position: fixed;
+	top: 10%;
+	right: 10%;
+	display: flex;
+	flex-direction: column;
+}
+.row.btns button{
+	margin-bottom: 10%;
+}
+
+.option-add{
+	position: absolute;
+	left: 60%;
+}
+
+.question-add,
+.question-del{
+	display: inline-block;
+}
+.question-del{
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+/*问卷*/
+.survey-row{
+	padding: 1% 10%;
+	background-color: aliceblue;
+}
+
+.survey-row .line{
+	border-bottom: 1px solid lightgray;
+	margin: 2% 0;
+}
+.survey-row .block{
+	width: 10px;
+	display: inline-block;
+}
+
+/*详情*/
+.survey-row .head{
+	font-weight: bold;
+	color: #0ab0cd;
+}
+
+.survey-row .description{
+	font-size: 12px;
+	font-style: italic;
+}
+
+
+.survey-row .question-all{
+	margin: 2% 0;
+	position: relative;
+}
+
+.survey-row .question-all .answer{
+	position: absolute;
+	bottom: 50%;
+	left: 60%;
+}
+
+.survey-row .question-all .description{
+	position: absolute;
+	right: 0;
+	top: 90%;
+	font-size: 14px;
+	font-style: italic;
+}
+
+.survey-row .question-all .question{
+	display: flex;
+	font-weight: bold;
+	font-size: 16px;
+	margin: 1% 0;
+	position: relative;
+}
+
+.survey-row .question-all .question .info .position{
+	width: 8px;
+}
+.survey-row .question-all .question .info .radio label{
+	width: 50px;
+}
+
+.survey-row .question-all .option{
+	display: flex;
+	width: 100%;
+	flex-wrap: wrap;
+	min-height: 150px;
+	position: relative;
+	flex-direction: column;
+	margin-bottom: 1%;
+}
+
+.question-all .option .option-item{
+	width: 25%;
+	display: flex;
+	position: relative;
+}
+
+.question-all .option .option-item label{
+	display: flex;
+	align-items: center;
+	margin-left: 15%;
+}
+
+.question-all .option .option-item .option-item-key{
+	min-width: 10px;
+}
+
+.question-all .option .option-item .option-item-text{
+	font-weight: normal;
+	min-width: 300px;
+	width: 100%;
+}
+
+/*编辑*/
+
+.survey-row input[type=text].border-hide{
+	border: none;
+	background: none;
+	cursor: pointer;
+}
+.survey-row input[type=text]:not(.border-hide):not(.layui-input){
+	border: none;
+	background: none;
+	cursor: pointer;
+	border-bottom: 1px solid;
+}
+
+.survey-row input[type=text]:hover{
+	border-bottom: 1px solid;
+}
+
+.survey-row .survey-head input[type=text]{
+	font-size: 30px;
+	font-weight: 100;
+	width: 80%;
+}
+
+.survey-row .question-num{
+	width: 30%;
+}
+.survey-row .question-num span{
+	display: inline-block;
+	margin-bottom: 10%;
+}
+
+.survey-row .question-all input[type=text]{
+	min-width: 300px;
+}
+
