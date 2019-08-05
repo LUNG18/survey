@@ -1,5 +1,5 @@
 server:
-  port: 6302
+  port: 6032
 
 spring:
   datasource:
@@ -20,7 +20,7 @@ spring:
 
 
 mybatis-plus:
-  mapper-locations: classpath*:/mapping/*.xml
+  mapperLocations: classpath*:/mapping/*.xml
   typeAliasesPackage: com.gobestsoft.survey.pojo
   global-config:
     id-type: 0  #0:数据库ID自增   1:用户输入id  2:全局唯一id(IdWorker)  3:全局唯一ID(uuid)
@@ -36,6 +36,6 @@ logging:
   pattern:
     console: '%d{yyyy-MM-dd hh:mm:ss} %-5level %logger{50} --> %msg%n'
     file: '%d{yyyy-MM-dd hh:mm:ss} %-5level %logger{50} --> %msg%n'
-  level.root: error
+  level.root: info
   file: log/survey.log
 
